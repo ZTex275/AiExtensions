@@ -16,14 +16,14 @@ using Microsoft.VisualStudio.Shell;
 namespace AIHelper
 {
     /// <summary>
-    /// Interaction logic for ToolWindow1Control.
+    /// Interaction logic for ToolWindowControl.
     /// </summary>
-    public partial class ToolWindow1Control : UserControl
+    public partial class ToolWindowControl : UserControl
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ToolWindow1Control"/> class.
+        /// Initializes a new instance of the <see cref="ToolWindowControl"/> class.
         /// </summary>
-        public ToolWindow1Control()
+        public ToolWindowControl()
         {
             this.InitializeComponent();
         }
@@ -48,10 +48,7 @@ namespace AIHelper
                 //    textBlock.Text = str.Result;
                 //}));
             }
-            else
-            {
-                MessageBox.Show("Введите текст!");
-            }
+            else MessageBox.Show("Введите текст!");
         }
 
         private async Task<string> SendRequestAsync()

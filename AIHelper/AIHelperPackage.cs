@@ -26,7 +26,7 @@ namespace AIHelper
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [Guid(AIHelperPackage.PackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideToolWindow(typeof(ToolWindow1))]
+    [ProvideToolWindow(typeof(ToolWindow))]
     public sealed class AIHelperPackage : AsyncPackage
     {
         /// <summary>
@@ -48,7 +48,7 @@ namespace AIHelper
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-            await ToolWindow1Command.InitializeAsync(this);
+            await ToolWindowCommand.InitializeAsync(this);
         }
 
         #endregion
