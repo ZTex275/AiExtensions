@@ -37,24 +37,21 @@ namespace AIHelper
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Default event handler naming pattern")]
         private void buttonSendRequest_Click(object sender, RoutedEventArgs e)
         {
-            //GetSelectedText();
-            if (textBox.Text != string.Empty)
-            {
-                var str = Task.Run(async () => await SendRequestAsync());
-                //textBlock.Text = str.Result;
+            string inputText = textBox.Text;
 
-                //Dispatcher.InvokeAsync((Action)(() =>
-                //{
-                //    textBlock.Text = str.Result;
-                //}));
+            if (inputText != string.Empty)
+            {
+                var str = Task.Run(async () => await SendRequestAsync(inputText));
             }
             else MessageBox.Show("Введите текст!");
         }
 
-        private async Task<string> SendRequestAsync()
+        private async Task<string> SendRequestAsync(string inputText)
         {
             string API_KEY = "API_HERE";
             string API_URL = "https://openrouter.ai/api/v1/chat/completions";
+
+            string getBuffer = GetSelectedText();
 
             var requestData = new
             {
@@ -62,7 +59,7 @@ namespace AIHelper
                 model = "deepseek/deepseek-chat:free",
                 messages = new[]
                 {
-                    new { role = "user", content = $"{textBox.Text}" }
+                    new { role = "user", content = $"{inputText + "\n" + getBuffer}" }
                 }
             };
 
@@ -127,6 +124,8 @@ namespace AIHelper
             if (selection.IsEmpty) return null;
 
             var selectedSpan = new SnapshotSpan(selection.Start.Position, selection.End.Position);
+
+            Debug.WriteLine(selectedSpan.GetText());
             return selectedSpan.GetText();
         }
     }
