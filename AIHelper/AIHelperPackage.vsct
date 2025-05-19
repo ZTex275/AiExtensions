@@ -42,11 +42,11 @@
               <CommandFlag>DefaultInvisible</CommandFlag>
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
-      <Button guid="guidAIHelperPackageCmdSet" id="ToolWindow1CommandId" priority="0x0100" type="Button">
+      <Button guid="guidAIHelperPackageCmdSet" id="ToolWindowCommandId" priority="0x0100" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
-          <ButtonText>ToolWindow1</ButtonText>
+          <ButtonText>AiHelper</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -68,7 +68,7 @@
 
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidAIHelperPackageCmdSet" value="{b778cda2-9779-45a8-b2cd-d0a78565225f}">
-      <IDSymbol name="ToolWindow1CommandId" value="0x0100" />
+      <IDSymbol name="ToolWindowCommandId" value="0x0100" />
     </GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{f4f1b235-359f-43b8-ae7e-0b28d7c2dabe}" >

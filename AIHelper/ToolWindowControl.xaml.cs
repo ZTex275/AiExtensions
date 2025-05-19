@@ -37,10 +37,13 @@ namespace AIHelper
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Default event handler naming pattern")]
         private void buttonSendRequest_Click(object sender, RoutedEventArgs e)
         {
-            string inputText = textBox.Text;
+            string inputText = textBoxMessage.Text;
 
             if (inputText != string.Empty)
             {
+                textBoxChat.Text += "\n\n" + "Я: " + inputText; // Выводим свое сообщение в окно
+                textBoxMessage.Clear(); // Очищаем сообщение
+                scrollViewerChat.ScrollToEnd(); // Прокручиваем скролл в самый низ
                 var str = Task.Run(async () => await SendRequestAsync(inputText));
             }
             else MessageBox.Show("Введите текст!");
@@ -51,7 +54,14 @@ namespace AIHelper
             string API_KEY = "API_HERE";
             string API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
+            string sendText;
             string getBuffer = GetSelectedText();
+
+            // Если мышкой не выделен буфер, то ничего не добавляем
+            if (getBuffer == string.Empty)
+                sendText = inputText;
+            else
+                sendText = inputText + "\n" + getBuffer;
 
             var requestData = new
             {
@@ -59,7 +69,7 @@ namespace AIHelper
                 model = "deepseek/deepseek-chat:free",
                 messages = new[]
                 {
-                    new { role = "user", content = $"{inputText + "\n" + getBuffer}" }
+                    new { role = "user", content = $"{sendText}" }
                 }
             };
 
@@ -93,12 +103,16 @@ namespace AIHelper
 
                 await Dispatcher.InvokeAsync((Action)(() =>
                 {
-                    textBlock.Text = messageContent;
+                    textBoxChat.AppendText("\n\n" + messageContent);
                 }));
                 return messageContent;
             }
             catch (Exception ex)
             {
+                await Dispatcher.InvokeAsync((Action)(() =>
+                {
+                    textBoxChat.AppendText("\n\n" + ex.Message);
+                }));
                 return ex.Message;
             }
         }

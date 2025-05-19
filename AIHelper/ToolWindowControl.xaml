@@ -7,33 +7,52 @@
              Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
              Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
              mc:Ignorable="d"
-             Name="MyToolWindow">
+             Name="HelperWindow">
     <Grid>
-        <StackPanel Orientation="Vertical">
-            <TextBlock 
-                x:Name="textBlock"
-                Background="White"
-                Foreground="Black"
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition MaxHeight="150" />
+        </Grid.RowDefinitions>
+
+        <ScrollViewer 
+            x:Name="scrollViewerChat"
+            Grid.Row="0"
+            HorizontalScrollBarVisibility="Auto" 
+            VerticalScrollBarVisibility="Auto">
+            <TextBox
+                x:Name="textBoxChat"
+                Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
+                Foreground="White"
                 FontSize="16"
+                TextWrapping="Wrap"
+                IsReadOnly="True"
                 MinWidth="400" 
-                TextWrapping="Wrap"
-                MinHeight="270">
-            </TextBlock>
-            <TextBox 
-                x:Name="textBox"
-                Margin="0,10,0,0" 
-                FontSize="16"
-                MinWidth="420" 
-                MinHeight="50"
-                HorizontalAlignment="Center" 
-                TextWrapping="Wrap"
-                HorizontalScrollBarVisibility="Auto" 
-                VerticalScrollBarVisibility="Auto"/>
+                MinHeight="200" >
+            </TextBox>
+        </ScrollViewer>
+        
+        <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
+            <ScrollViewer 
+                Grid.Row="1" 
+                VerticalAlignment="Bottom" 
+                HorizontalScrollBarVisibility="Disabled" 
+                VerticalScrollBarVisibility="Auto">
+                <TextBox 
+                    x:Name="textBoxMessage"
+                    Margin="0,10,0,0" 
+                    FontSize="16"
+                    MinWidth="400" 
+                    Height="70"
+                    TextWrapping="Wrap" />
+            </ScrollViewer>
             <Button 
-                Margin="10" 
+                Margin="10"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Bottom"
                 FontSize="18"
                 Content="Отправить" 
                 Click="buttonSendRequest_Click" 
+                IsDefault="True"
                 Width="200" 
                 Height="50" 
                 Name="button1"/>
