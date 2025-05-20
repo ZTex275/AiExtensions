@@ -12,6 +12,8 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace AIHelper
 {
@@ -44,14 +46,20 @@ namespace AIHelper
                 textBoxChat.Text += "\n\n" + "Я: " + inputText; // Выводим свое сообщение в окно
                 textBoxMessage.Clear(); // Очищаем сообщение
                 scrollViewerChat.ScrollToEnd(); // Прокручиваем скролл в самый низ
-                var str = Task.Run(async () => await SendRequestAsync(inputText));
+                Task.Run(async () => await SendRequestAsync(inputText));
             }
             else MessageBox.Show("Введите текст!");
         }
 
-        private async Task<string> SendRequestAsync(string inputText)
+        private async Task SendRequestAsync(string inputText)
         {
-            string API_KEY = "API_HERE";
+            // Подключаем json чтобы получить из него API-ключ
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            string API_KEY = config["ApiSettings:ApiKey"];
             string API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
             string sendText;
@@ -105,7 +113,6 @@ namespace AIHelper
                 {
                     textBoxChat.AppendText("\n\n" + messageContent);
                 }));
-                return messageContent;
             }
             catch (Exception ex)
             {
@@ -113,7 +120,6 @@ namespace AIHelper
                 {
                     textBoxChat.AppendText("\n\n" + ex.Message);
                 }));
-                return ex.Message;
             }
         }
 
