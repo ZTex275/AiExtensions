@@ -1,0 +1,162 @@
+/* This is the default style sheet for syntax highlighting with FormatC.
+ * This stylesheet follows the default settings of Visual Studio,
+ * SQL Server Management Studio (for T-SQL), and PowerShell ISE 
+ * (for PowerShell) as much as possible.
+ *
+ * You can customize this stylesheet to suit your preferences.
+ */
+.code
+{
+	background-color: #1e1e1e;
+	color: #dcdcdc;
+	font-size: small;
+	font-family: Consolas, monospace;
+}
+.code .lineNumber, .code td.lineNumbers
+{
+	color: #808080;
+}
+.code .lineNumber
+{
+	user-select: none;
+}
+.code pre
+{
+	font-family: Consolas, monospace;
+    margin: 0;
+}
+.code td
+{
+    padding: 0;
+}
+.code td.lineNumbers
+{
+    text-align: right;
+}
+.code .keyword
+{
+	color: rgb(86,156,214);
+}
+.code .preprocessor
+{
+	color: rgb(155,155,155);
+}
+.code .operator
+{
+	color: rgb(180,180,180);
+}
+.code .comment
+{
+	color: rgb(87,166,74);
+}
+.code .xmlLiteral .comment
+{
+	color: rgb(96, 139, 78);
+}
+.code .string
+{
+	color: rgb(214,157,133)
+}
+.code .entity
+{
+	color: rgb(146,202,244);
+}
+.code .tagDelimiter, .code .attributeDelimiter
+{
+	color: rgb(128, 128, 128);
+}
+.code .xmlLiteral .tagDelimiter, .code .xmlLiteral .attributeDelimiter, .code .xmlDelimiter, .code .xmlImportAttributeDelimiter
+{
+	color: rgb(137,187,130);
+}
+.code .tagName
+{
+	color: rgb(86,156,214);
+}
+.code .xmlLiteral .tagName
+{
+	color: rgb(86,156,214);
+}
+.code .attributeName
+{
+	color: rgb(146,202,244);	
+}
+.code .xmlLiteral .attributeName, .code .xmlImportAttributeName, .code .xmlLiteral .attributeValue, .code .xmlImportAttributeValue
+{
+	color: rgb(200,200,200);
+}
+.code .attributeValue
+{
+	color: rgb(200,200,200)
+}
+.code .cdata
+{
+	color: rgb(233,213,133);
+}
+.code .xmlLiteral .cdata
+{
+	color: rgb(233,213,133);
+}
+.code .type
+{
+	color: rgb(78,201,176);
+}
+.code .xmlLiteral .embeddedExpressionDelimiter
+{
+	color: rgb(113,113,113);
+	background-color: rgb(237,224,209);
+}
+.code .sqlString
+{
+	color: rgb(203,65,65);
+}
+.code .sqlSystemFunction
+{
+	color: rgb(201,117,213);
+}
+.code .sqlOperator
+{
+	color: rgb(129,129,129);
+}
+.code .psVariable
+{
+    color: #9CDCFE;
+}
+.code .psComment
+{
+    color: #6A9955;
+}
+.code .psString
+{
+    color: #ce9178;
+}
+.code .psOperator
+{
+    color: #d4d4d4;
+}
+.code .psCommand
+{
+    color: #DCDCAA;
+}
+/*.code .psCommandParameter
+{
+}
+.code .psCommandArgument
+{
+}*/
+.code .psAttribute
+{
+    color: #DCDCAA;
+}
+.code .psNumber
+{
+    color: #b5cea8;
+}
+.code .psType
+{
+    color: #4EC9B0;
+}
+.code .psKeyword, .code .psLoopLabel
+{
+    color: #569cd6;
+}

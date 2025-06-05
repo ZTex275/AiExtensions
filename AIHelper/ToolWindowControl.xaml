@@ -19,7 +19,7 @@
             Grid.Row="0"
             HorizontalScrollBarVisibility="Auto" 
             VerticalScrollBarVisibility="Auto">
-            <TextBox
+            <!--<TextBox
                 x:Name="textBoxChat"
                 Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
                 Foreground="White"
@@ -28,7 +28,8 @@
                 IsReadOnly="True"
                 MinWidth="400" 
                 MinHeight="200" >
-            </TextBox>
+            </TextBox>-->
+            <WebBrowser x:Name="webBrowser" />
         </ScrollViewer>
         
         <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
@@ -43,7 +44,10 @@
                     FontSize="16"
                     MinWidth="400" 
                     Height="70"
+                    SpellCheck.IsEnabled="True"
+                    AcceptsTab="True"
                     TextWrapping="Wrap" />
+                    <!--AcceptsReturn="True"-->
             </ScrollViewer>
             <Button 
                 Margin="10"

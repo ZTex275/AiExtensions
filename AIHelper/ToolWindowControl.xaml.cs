@@ -12,22 +12,31 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Shell;
+using Markdig;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using System.Text.RegularExpressions;
+using Ookii.FormatC;
+using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace AIHelper
 {
     /// <summary>
     /// Interaction logic for ToolWindowControl.
     /// </summary>
-    public partial class ToolWindowControl : UserControl
+    public partial class ToolWindowControl : System.Windows.Controls.UserControl
     {
+        private string oldMarkdownHtml;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ToolWindowControl"/> class.
         /// </summary>
         public ToolWindowControl()
         {
             this.InitializeComponent();
+
+            SetHTML("Введите запрос и нажмите Enter(можно также выделять код)");
         }
 
         /// <summary>
@@ -43,12 +52,15 @@ namespace AIHelper
 
             if (inputText != string.Empty)
             {
-                textBoxChat.Text += "\n\n" + "Я: " + inputText; // Выводим свое сообщение в окно
+                SetHTML("Я:" + " " + inputText);
                 textBoxMessage.Clear(); // Очищаем сообщение
-                scrollViewerChat.ScrollToEnd(); // Прокручиваем скролл в самый низ
+                //scrollViewerChat.ScrollToEnd(); // Прокручиваем скролл в самый низ,
                 Task.Run(async () => await SendRequestAsync(inputText));
             }
-            else MessageBox.Show("Введите текст!");
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("Введите текст!");
+            }
         }
 
         private async Task SendRequestAsync(string inputText)
@@ -106,21 +118,84 @@ namespace AIHelper
                 // Вытаскиваем оттуда сообщение
                 JsonNode rootNode = JsonNode.Parse(contentString);
                 string messageContent = rootNode["choices"][0]["message"]["content"].ToString();
+                SetHTML(messageContent);
 
                 Debug.WriteLine(messageContent);
-
-                await Dispatcher.InvokeAsync((Action)(() =>
-                {
-                    textBoxChat.AppendText("\n\n" + messageContent);
-                }));
             }
             catch (Exception ex)
             {
-                await Dispatcher.InvokeAsync((Action)(() =>
-                {
-                    textBoxChat.AppendText("\n\n" + ex.Message);
-                }));
+                SetHTML(ex.Message);
             }
+        }
+
+        public string SetHTML(string messageContent)
+        {
+            string markdownHtml = Markdown.ToHtml(messageContent); // Для парса markdown в html
+
+            if (markdownHtml.Contains("<pre><code class=\"language-csharp\">"))
+            {
+                markdownHtml = HighlightText(markdownHtml);
+            }
+
+            string codedarkCss = LoadResource("codedark.css");
+
+            string htmlText =
+                $"<html>" +
+                $"<head>" +
+                $"<meta charset=\"UTF-8\">" +
+                $"<style>{codedarkCss}</style>" +
+                $"</head>" +
+                $"<body style=\"background-color: #1e1e1e; color: #dcdcdc; font-size: small; font-family: Consolas, monospace;\">" +
+                $"<body>" +
+                $"{oldMarkdownHtml}" +
+                $"{markdownHtml}" +
+                $"</body>" +
+                $"</html>";
+
+            Dispatcher.Invoke((Action)(() =>
+            {
+                webBrowser.NavigateToString(htmlText);
+            }));
+
+            oldMarkdownHtml += markdownHtml;
+
+            return htmlText;
+        }
+
+        private string HighlightText(string markdownHtml)
+        {
+            // Регулярное выражение для поиска блоков <pre><code...</code></pre>
+            string pattern = @"<pre><code class=""language-csharp"">(.*?)</code></pre>";
+            var matches = Regex.Matches(markdownHtml, pattern, RegexOptions.Singleline);
+
+            foreach (Match match in matches)
+            {
+                // Сохраняем позиции начала и конца текущего блока
+                int startIndex = match.Index;
+                int endIndex = startIndex + match.Length;
+
+                //string codeBlock = match.Value;
+                string codeBlock = match.Groups[1].Value.Trim();
+
+                var formatter = new CodeFormatter();
+                formatter.FormattingInfo = new CSharpFormattingInfo() { Types = new[] { "Console" } };
+                codeBlock = formatter.FormatCode(codeBlock);
+
+                markdownHtml = markdownHtml.Substring(0, startIndex) + codeBlock + markdownHtml.Substring(endIndex);
+
+                //string pattern2 = @"<pre><code[\s\S]*?</code></pre>";
+                //markdownHtml = Regex.Replace(markdownHtml, pattern2, codeBlock);
+            }
+
+            return markdownHtml;
+        }
+
+        private static string LoadResource(string filename)
+        {
+            var path = Path.Combine(Directory.GetCurrentDirectory(), filename);
+
+            //Загружаем все символы файла, если можем
+            return File.Exists(path) ? File.ReadAllText(path) : "";
         }
 
         public string GetSelectedText()
