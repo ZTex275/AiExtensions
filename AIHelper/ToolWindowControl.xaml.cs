@@ -1,24 +1,21 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.VisualStudio.Shell;
-using Markdig;
-using Microsoft.Extensions.Configuration;
-using System.IO;
-using System.Text.RegularExpressions;
-using Ookii.FormatC;
-using System.Windows.Forms;
 using System.Windows.Input;
+using Markdig;
+using Markdown.ColorCode;
+using Microsoft.Extensions.Configuration;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.TextManager.Interop;
 
 namespace AIHelper
 {
@@ -130,12 +127,17 @@ namespace AIHelper
 
         public string SetHTML(string messageContent)
         {
-            string markdownHtml = Markdown.ToHtml(messageContent); // Для парса markdown в html
+            var pipeline = new MarkdownPipelineBuilder()
+                .UseAdvancedExtensions()
+                .UseColorCode(
+                    HtmlFormatterType.Style // use style-based colorization (default)
+                    //myCustomStyleDictionary, // use a custom colorization style dictionary
+                    //myAdditionalLanguages, // augment the built-in language support
+                    //myCustomLanguageId // set a default language ID to fall back to
+                )
+                .Build();
 
-            if (markdownHtml.Contains("<pre><code class=\"language-csharp\">"))
-            {
-                markdownHtml = HighlightText(markdownHtml);
-            }
+            string markdownHtml = Markdig.Markdown.ToHtml(messageContent, pipeline); // Для парса markdown в html
 
             string codedarkCss = LoadResource("codedark.css");
 
@@ -145,7 +147,7 @@ namespace AIHelper
                 $"<meta charset=\"UTF-8\">" +
                 $"<style>{codedarkCss}</style>" +
                 $"</head>" +
-                $"<body style=\"background-color: #1e1e1e; color: #dcdcdc; font-size: small; font-family: Consolas, monospace;\">" +
+                //$"<body style=\"background-color: #1e1e1e; color: #dcdcdc; font-size: small; font-family: Arial, monospace;\">" +
                 $"<body>" +
                 $"{oldMarkdownHtml}" +
                 $"{markdownHtml}" +
@@ -158,36 +160,7 @@ namespace AIHelper
             }));
 
             oldMarkdownHtml += markdownHtml;
-
             return htmlText;
-        }
-
-        private string HighlightText(string markdownHtml)
-        {
-            // Регулярное выражение для поиска блоков <pre><code...</code></pre>
-            string pattern = @"<pre><code class=""language-csharp"">(.*?)</code></pre>";
-            var matches = Regex.Matches(markdownHtml, pattern, RegexOptions.Singleline);
-
-            foreach (Match match in matches)
-            {
-                // Сохраняем позиции начала и конца текущего блока
-                int startIndex = match.Index;
-                int endIndex = startIndex + match.Length;
-
-                //string codeBlock = match.Value;
-                string codeBlock = match.Groups[1].Value.Trim();
-
-                var formatter = new CodeFormatter();
-                formatter.FormattingInfo = new CSharpFormattingInfo() { Types = new[] { "Console" } };
-                codeBlock = formatter.FormatCode(codeBlock);
-
-                markdownHtml = markdownHtml.Substring(0, startIndex) + codeBlock + markdownHtml.Substring(endIndex);
-
-                //string pattern2 = @"<pre><code[\s\S]*?</code></pre>";
-                //markdownHtml = Regex.Replace(markdownHtml, pattern2, codeBlock);
-            }
-
-            return markdownHtml;
         }
 
         private static string LoadResource(string filename)

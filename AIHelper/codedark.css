@@ -1,18 +1,15 @@
-/* This is the default style sheet for syntax highlighting with FormatC.
- * This stylesheet follows the default settings of Visual Studio,
- * SQL Server Management Studio (for T-SQL), and PowerShell ISE 
- * (for PowerShell) as much as possible.
- *
- * You can customize this stylesheet to suit your preferences.
- */
-.code
+body
 {
 	background-color: #1e1e1e;
 	color: #dcdcdc;
 	font-size: small;
-	font-family: Consolas, monospace;
+	font-family: Arial, monospace;
 }
-.code .lineNumber, .code td.lineNumbers
+::selection {
+    background: #809778;
+    color: red;
+}
+/*.code .lineNumber, .code td.lineNumbers
 {
 	color: #808080;
 }
@@ -22,7 +19,7 @@
 }
 .code pre
 {
-	font-family: Consolas, monospace;
+	font-family: Arial, monospace;
     margin: 0;
 }
 .code td
@@ -138,12 +135,6 @@
 {
     color: #DCDCAA;
 }
-/*.code .psCommandParameter
-{
-}
-.code .psCommandArgument
-{
-}*/
 .code .psAttribute
 {
     color: #DCDCAA;
@@ -159,4 +150,4 @@
 .code .psKeyword, .code .psLoopLabel
 {
     color: #569cd6;
-}
+}*/
