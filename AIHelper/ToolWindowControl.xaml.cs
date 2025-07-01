@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
@@ -25,6 +26,8 @@ namespace AIHelper
     public partial class ToolWindowControl : System.Windows.Controls.UserControl
     {
         private string oldMarkdownHtml;
+        private const string API_URL = "https://openrouter.ai/api/v1/chat/completions";
+        private string API_KEY;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ToolWindowControl"/> class.
@@ -62,14 +65,8 @@ namespace AIHelper
 
         private async Task SendRequestAsync(string inputText)
         {
-            // Подключаем json чтобы получить из него API-ключ
-            var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .Build();
-
-            string API_KEY = config["ApiSettings:ApiKey"];
-            string API_URL = "https://openrouter.ai/api/v1/chat/completions";
+            // Загружаем API ключ из файла
+            LoadJson();
 
             string sendText;
             string getBuffer = GetSelectedText();
@@ -163,12 +160,25 @@ namespace AIHelper
             return htmlText;
         }
 
-        private static string LoadResource(string filename)
+        private void LoadJson()
         {
-            var path = Path.Combine(Directory.GetCurrentDirectory(), filename);
+#if DEBUG
+            // Подключаем json чтобы получить из него API-ключ
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "Resources"))
+                .AddJsonFile("appsettings.json")
+                .Build();
+#else
+            string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            //Загружаем все символы файла, если можем
-            return File.Exists(path) ? File.ReadAllText(path) : "";
+            // Подключаем json чтобы получить из него API-ключ
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Path.Combine(assemblyPath, "Resources"))
+                .AddJsonFile("appsettings.json")
+                .Build();
+#endif
+
+            API_KEY = config["ApiSettings:ApiKey"];
         }
 
         public string GetSelectedText()
@@ -195,6 +205,19 @@ namespace AIHelper
 
             Debug.WriteLine(selectedSpan.GetText());
             return selectedSpan.GetText();
+        }
+
+        private static string LoadResource(string filename)
+        {
+#if DEBUG
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "Resources", filename);
+#else
+            string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var path = Path.Combine(assemblyPath, "Resources", filename);
+#endif
+
+            //Загружаем все символы файла, если можем
+            return File.Exists(path) ? File.ReadAllText(path) : "";
         }
     }
 }
