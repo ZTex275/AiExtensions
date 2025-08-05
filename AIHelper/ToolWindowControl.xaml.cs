@@ -28,6 +28,7 @@ namespace AIHelper
         private string oldMarkdownHtml;
         private const string API_URL = "https://openrouter.ai/api/v1/chat/completions";
         private string API_KEY;
+        private string AiModel;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ToolWindowControl"/> class.
@@ -79,8 +80,7 @@ namespace AIHelper
 
             var requestData = new
             {
-                //model = "deepseek/deepseek-v3-base:free",
-                model = "deepseek/deepseek-chat:free",
+                model = AiModel,
                 messages = new[]
                 {
                     new { role = "user", content = $"{sendText}" }
@@ -179,6 +179,7 @@ namespace AIHelper
 #endif
 
             API_KEY = config["ApiSettings:ApiKey"];
+            AiModel = config["ApiSettings:AiModel"];
         }
 
         public string GetSelectedText()
