@@ -60,7 +60,11 @@ namespace AIHelper
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show("Введите текст!");
+#if !DEBUG
+               System.Windows.Forms.MessageBox.Show("Введите текст!");
+#else
+                DebugMessage();
+#endif
             }
         }
 
@@ -111,7 +115,13 @@ namespace AIHelper
 
                 // Вытаскиваем оттуда сообщение
                 JsonNode rootNode = JsonNode.Parse(contentString);
-                string messageContent = rootNode["choices"][0]["message"]["content"].ToString();
+
+                string messageContent;
+
+                if (rootNode["choices"] != null) // Проверка на ошибку с хоста
+                    messageContent = rootNode["choices"][0]["message"]["content"].ToString();
+                else
+                    messageContent = rootNode["error"]["metadata"]["raw"].ToString();
                 SetHTML(messageContent);
 
                 Debug.WriteLine(messageContent);
@@ -137,14 +147,15 @@ namespace AIHelper
             string markdownHtml = Markdig.Markdown.ToHtml(messageContent, pipeline); // Для парса markdown в html
 
             string codedarkCss = LoadResource("codedark.css");
+            string mainJs = LoadResource("main.js");
 
             string htmlText =
                 $"<html>" +
+                $"<script>{mainJs}</script>" +
                 $"<head>" +
                 $"<meta charset=\"UTF-8\">" +
                 $"<style>{codedarkCss}</style>" +
                 $"</head>" +
-                //$"<body style=\"background-color: #1e1e1e; color: #dcdcdc; font-size: small; font-family: Arial, monospace;\">" +
                 $"<body>" +
                 $"{oldMarkdownHtml}" +
                 $"{markdownHtml}" +
@@ -154,6 +165,11 @@ namespace AIHelper
             Dispatcher.Invoke((Action)(() =>
             {
                 webBrowser.NavigateToString(htmlText);
+                webBrowser.LoadCompleted += (s, e) =>
+                {
+                    webBrowser.InvokeScript("scrollToEnd");
+                    webBrowser.InvokeScript("ctrlC");
+                };
             }));
 
             oldMarkdownHtml += markdownHtml;
@@ -219,6 +235,43 @@ namespace AIHelper
 
             //Загружаем все символы файла, если можем
             return File.Exists(path) ? File.ReadAllText(path) : "";
+        }
+
+        private void DebugMessage()
+        {
+            SetHTML(
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd" +
+                "ssssssssssssssssssdasdadasdasddaadads C+++dasdasdddddddddddddddddddddddddddd"
+            );
         }
     }
 }
