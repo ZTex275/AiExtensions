@@ -49,6 +49,9 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AIHelperPackage.cs" />
+    <Compile Include="ConfigOptionsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ToolWindow.cs" />
     <Compile Include="ToolWindowCommand.cs" />
     <Compile Include="ToolWindowControl.xaml.cs">

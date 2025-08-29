@@ -27,6 +27,7 @@ namespace AIHelper
     [Guid(AIHelperPackage.PackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideToolWindow(typeof(ToolWindow))]
+    [ProvideOptionPage(typeof(ConfigOptionsPage), "AI Helper", "Configuration", 0, 0, true)]
     public sealed class AIHelperPackage : AsyncPackage
     {
         /// <summary>
