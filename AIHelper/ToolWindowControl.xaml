@@ -11,7 +11,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
-            <RowDefinition MaxHeight="150" />
+            <RowDefinition MaxHeight="100" />
         </Grid.RowDefinitions>
 
         <ScrollViewer 
@@ -22,34 +22,57 @@
             <WebBrowser x:Name="webBrowser" />
         </ScrollViewer>
         
-        <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
+        <Grid Grid.Row="1" VerticalAlignment="Bottom">
             <ScrollViewer 
-                Grid.Row="1" 
                 VerticalAlignment="Bottom" 
                 HorizontalScrollBarVisibility="Disabled" 
                 VerticalScrollBarVisibility="Auto">
-                <TextBox 
-                    x:Name="textBoxMessage"
-                    Margin="0,10,0,0" 
-                    FontSize="16"
-                    MinWidth="400" 
-                    Height="70"
-                    SpellCheck.IsEnabled="True"
-                    AcceptsTab="True"
-                    TextWrapping="Wrap" />
+                <Border
+                    Margin="5,5,5,5"
+                    Padding="5"
+                    CornerRadius="8"
+                    Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}"
+                    BorderBrush="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBorderKey}}"
+                    BorderThickness="1">
+                    <TextBox 
+                        x:Name="textBoxMessage"
+                        Background="Transparent"
+                        Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
+                        BorderThickness="0"
+                        FontSize="16"
+                        MinWidth="400" 
+                        Height="70"
+                        SpellCheck.IsEnabled="True"
+                        AcceptsTab="True"
+                        TextWrapping="Wrap" />
+                </Border>
                     <!--AcceptsReturn="True"-->
             </ScrollViewer>
             <Button 
-                Margin="10"
-                HorizontalAlignment="Center"
+                Margin="0,0,10,20"
+                HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
-                FontSize="18"
-                Content="Отправить" 
                 Click="buttonSendRequest_Click" 
                 IsDefault="True"
-                Width="200" 
+                Width="50" 
                 Height="50" 
-                Name="button1"/>
-        </StackPanel>
+                ToolTip="Отправить">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Ellipse x:Name="ellipseBg" Fill="#FF3F51B5" StrokeThickness="0"/>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Button.Template>
+                <TextBlock 
+                    Text=""
+                    Foreground="White"
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="22"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"/>
+            </Button>
+        </Grid>
     </Grid>
 </UserControl>
