@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="AIHelper.7a92e02e-50d7-466a-9b4f-52d5d5022c3a" Version="2.0" Language="ru-RU" Publisher="Ilya Buzunov" />
+        <Identity Id="AIHelper.7a92e02e-50d7-466a-9b4f-52d5d5022c3a" Version="3.0" Language="ru-RU" Publisher="Ilya Buzunov" />
         <DisplayName>AIHelper</DisplayName>
-        <Description xml:space="preserve">Расширение для работы с нейросетями(DeepSeek)</Description>
+        <Description xml:space="preserve">Расширение для работы с нейросетями(DeepSeek). Выбор модели и вставка API ключа из https://openrouter.ai находится в Средства-&gt;Настройки-&gt;AiHelper</Description>
+        <Icon>Resources\icons8-ai-16.png</Icon>
+        <PreviewImage>Resources\icons8-ai-16.png</PreviewImage>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">
