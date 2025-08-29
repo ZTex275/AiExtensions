@@ -4,12 +4,10 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using Markdig;
 using Markdown.ColorCode;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +15,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
+using mshtml;
 
 namespace AIHelper
 {
@@ -29,6 +28,7 @@ namespace AIHelper
         private const string API_URL = "https://openrouter.ai/api/v1/chat/completions";
         private string API_KEY;
         private string AiModel;
+        private DateTime lastTimeExecution;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ToolWindowControl"/> class.
@@ -168,7 +168,21 @@ namespace AIHelper
                 webBrowser.LoadCompleted += (s, e) =>
                 {
                     webBrowser.InvokeScript("scrollToEnd");
-                    webBrowser.InvokeScript("ctrlC");
+                    //webBrowser.InvokeScript("ctrlC");
+
+                    try
+                    {
+                        var doc = webBrowser.Document as HTMLDocument;
+                        if (doc != null)
+                        {
+                            var iEvent = (HTMLDocumentEvents2_Event)doc;
+                            if (iEvent != null)
+                            {
+                                iEvent.onkeypress += new HTMLDocumentEvents2_onkeypressEventHandler(CopySelectedTextFromWindow);
+                            }
+                        }
+                    }
+                    catch { }
                 };
             }));
 
@@ -196,6 +210,39 @@ namespace AIHelper
 
             API_KEY = config["ApiSettings:ApiKey"];
             AiModel = config["ApiSettings:AiModel"];
+        }
+
+        private bool CopySelectedTextFromWindow(IHTMLEventObj pEvtObj)
+        {
+            if (pEvtObj.ctrlKey && pEvtObj.keyCode == 3) // Ctrl + C
+            {
+                if (DateTime.Now - lastTimeExecution >= TimeSpan.FromSeconds(3)) // Ставим ограничение на повторный заход
+                {
+                    var doc = webBrowser.Document as HTMLDocument;
+                    if (doc != null)
+                    {
+                        var currentSelection = doc.selection;
+                        if (currentSelection != null)
+                        {
+                            dynamic selectionRange = currentSelection.createRange();
+                            if (selectionRange != null)
+                            {
+                                // Получаем выделенный текст в браузере
+                                dynamic selectionText = selectionRange.Text;
+                                if (!string.IsNullOrEmpty(selectionText))
+                                {
+                                    // Записываем в буффер обмена
+                                    Clipboard.SetText(selectionText);
+                                    lastTimeExecution = DateTime.Now;
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
 
         public string GetSelectedText()

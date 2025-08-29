@@ -13,26 +13,58 @@ function scrollToEnd() {
 }
 
 function ctrlC() {
-    //document.addEventListener('keydown', function (event) {
-    //    if (event.ctrlKey && event.key === 'c') {
-    //        const textToCopy = "Buba";
-    //        const textarea = document.createElement('textarea');
-    //        textarea.value = textToCopy;
-    //        document.body.appendChild(textarea);
-    //        textarea.select();
-    //        document.execCommand('copy');
-    //        document.body.removeChild(textarea);
-    //        console.log('Yes (fallback method)');
+    // Глобальный обработчик событий
+    //window.onkeydown = function () {
+    //    alert("onkeydown");
+    //    var e = window.event;
+    //    if (e.ctrlKey && e.keyCode === 67) {
+    //        // Копируем HTML
+    //        var html = document.documentElement.outerHTML;
+
+    //        // Используем clipboardData
+    //        if (window.clipboardData) {
+    //            window.clipboardData.setData('Text', html);
+    //            alert('HTML скопирован!');
+    //        }
+
+    //        e.returnValue = false;
+    //        return false;
+    //    }
+    //    return true;
+    //};
+
+    // Для Internet Explorer используем attachEvent вместо addEventListener
+    //if (document.attachEvent) {
+    //    document.attachEvent('onkeydown', function (event) {
+    //        alert("onkeydown");
+    //        event = event || window.event;
+
+    //        // Проверяем Ctrl+C
+    //        if (event.ctrlKey && event.keyCode === 67) {
+    //            alert("event.ctrlKey && event.keyCode");
+    //            var htmlContent = document.documentElement.outerHTML;
+    //            // Копирование через IE-совместимый метод
+    //            copyToClipboardIE(htmlContent);
+    //            alert(htmlContent);
+
+    //            // Показываем уведомление
+    //            showNotification('HTML скопирован!');
+
+    //            // Предотвращаем стандартное поведение
+    //            event.returnValue = false;
+    //            return false;
+    //        }
+    //    });
+    //}
+
+    //document.body.addEventListener('keydown', function (event) {
+    //    if ((event.ctrlKey || event.metaKey) && event.key === 'c') {
+    //        // Копируем весь документ или конкретный элемент
+    //        elementToCopy = document.getElementById('content') || document.documentElement;
+    //        htmlContent = elementToCopy.outerHTML;
+
+    //        copyToClipboard(htmlContent);
+    //        event.preventDefault();
     //    }
     //});
-
-    //var textarea = document.getElementById("textarea");
-    //var copyButton = document.getElementById("copyButton");
-
-    //document.body.addEventListener('click', function (e) {
-    //    // Выделяем текст в поле
-    //    textarea.select();
-    //    // Копируем текст в буфер обмена
-    //    document.execCommand('copy');
-    //}, false);
 };
