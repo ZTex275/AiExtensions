@@ -69,6 +69,12 @@ namespace AIHelper
             }
         }
 
+        private void buttonDelete_Click(object sender, RoutedEventArgs e)
+        {
+            oldMarkdownHtml = "";
+            SetHTML(oldMarkdownHtml);
+        }
+
         private async Task SendRequestAsync(string inputText)
         {
             // Загружаем API ключ из файла
