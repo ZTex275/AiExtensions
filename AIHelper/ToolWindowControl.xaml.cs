@@ -78,7 +78,7 @@ namespace AIHelper
             string getBuffer = GetSelectedText();
 
             // Если мышкой не выделен буфер, то ничего не добавляем
-            if (getBuffer == string.Empty)
+            if (string.IsNullOrEmpty(getBuffer))
                 sendText = inputText;
             else
                 sendText = inputText + "\n" + getBuffer;
@@ -98,7 +98,7 @@ namespace AIHelper
                 RequestUri = new Uri(API_URL),
                 Headers = {
                     Authorization = AuthenticationHeaderValue.Parse($"Bearer {API_KEY}"),
-                    Accept = {MediaTypeWithQualityHeaderValue.Parse("application/json")}
+                    Accept = { MediaTypeWithQualityHeaderValue.Parse("application/json") }
                 },
                 Content = new StringContent(JsonSerializer.Serialize(requestData))
                 {
